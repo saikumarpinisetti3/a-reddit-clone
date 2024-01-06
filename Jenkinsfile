@@ -56,7 +56,6 @@ pipeline {
                      sh "docker image tag ${APP_NAME}:${IMAGE_TAG} saikumarpinisetti/${APP_NAME}:latest"
                     }
                 }
-            }
         }
     stage("PUSH IMAGE TO DOCKER HUB"){
             steps{
