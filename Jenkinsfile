@@ -54,12 +54,19 @@ pipeline {
                     sh "docker build -t ${APP_NAME}:${IMAGE_TAG} ."
                     sh "docker image tag ${APP_NAME}:${IMAGE_TAG} saikumarpinisetti/${APP_NAME}:${IMAGE_TAG}"
                      sh "docker image tag ${APP_NAME}:${IMAGE_TAG} saikumarpinisetti/${APP_NAME}:latest"
-                     withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    }
+                }
+            }
+        }
+    stage("PUSH IMAGE TO DOCKER HUB"){
+            steps{
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
 
                     sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
                     sh "docker image push saikumarpinisetti/${APP_NAME}:${IMAGE_TAG}"
                     sh "docker image push saikumarpinisetti/${APP_NAME}:latest"
-                    }
+                    }   
                 }
             }
         }
