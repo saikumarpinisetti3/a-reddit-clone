@@ -9,7 +9,7 @@ pipeline {
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "saikumarpinisetti"
-        DOCKER_PASS = 'dockerhub'
+        DOCKER_PASS = 'Supershot#143'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
@@ -51,10 +51,14 @@ pipeline {
         stage("Build & Push Docker Image") {
             steps {
                 script {
-                    docker.withRegistry('', DOCKER_PASS) {
-                        def dockerImage = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
-                        dockerImage.push()
-                        dockerImage.push('latest')
+                    sh "docker build -t ${APP_NAME}:${IMAGE_TAG} ."
+                    sh "docker image tag ${APP_NAME}:${IMAGE_TAG} saikumarpinisetti/${APP_NAME}:${IMAGE_TAG}"
+                     sh "docker image tag ${APP_NAME}:${IMAGE_TAG} saikumarpinisetti/${APP_NAME}:latest"
+                     withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+
+                    sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+                    sh "docker image push saikumarpinisetti/${APP_NAME}:${IMAGE_TAG}"
+                    sh "docker image push saikumarpinisetti/${APP_NAME}:latest"
                     }
                 }
             }
